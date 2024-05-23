@@ -48,7 +48,7 @@ export const fetchBreedDetails = createAsyncThunk(
                 `${import.meta.env.VITE_DOG_API_URL}v1/images/${breedData.reference_image_id}`,
                 requestOptions,
             );
-            breedData.image = imageResponse.data.url;
+            return {...breedData, image: imageResponse.data.url}
         }
         return breedData;
     },
