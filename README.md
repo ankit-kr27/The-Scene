@@ -85,5 +85,5 @@ The application is deployed on Vercel. You can visit it at [Dog Breeds Applicati
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-```
+
 
