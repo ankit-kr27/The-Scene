@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const BreedCard = ({ breed }) => {
-    console.log(breed)
+    // console.log(breed)
     return (
         <Link
             to={`/breed/${breed.id}`}

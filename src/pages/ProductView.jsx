@@ -24,13 +24,13 @@ const ProductView = () => {
   if(status === 'failed') return <div>Error: {error}</div>;
 
   return (
-      <div className="container mx-auto p-4">
+      <div className="container mx-auto sm:max-w-[50vw] p-[2vw]">
           {breedDetails && (
               <>
                   <img
                       src={breedDetails.image}
                       alt={breedDetails.name}
-                      className="h-64 w-full rounded-md object-cover"
+                      className="h-[80%] w-full rounded-md object-cover"
                   />
                   <h1 className="mt-4 text-3xl font-bold">
                       {breedDetails.name}

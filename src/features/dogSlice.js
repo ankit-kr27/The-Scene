@@ -1,37 +1,41 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, createSelector } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const headers = new Headers({
+const headers = {
     "Content-Type": "application/json",
     "x-api-key": import.meta.env.VITE_DOG_API_KEY,
-});
+}
 
-const requestOptions = {
-    method: "GET",
-    headers: headers,
-    redirect: "follow",
-};
+const LIMIT = 9;
 
-export const fetchBreeds = createAsyncThunk("breeds/fetchBreeds", async () => {
+export const fetchBreeds = createAsyncThunk("breeds/fetchBreeds", async (page=0, {getState}) => {
+    const state = getState();
+    const cachedBreeds = state.breeds.pages[page]
+
+    if(cachedBreeds){
+        return {breedsWithImages: cachedBreeds, totalPages: state.breeds.totalPages, page}
+    }
+
     const response = await axios.get(
         `${import.meta.env.VITE_DOG_API_URL}v1/breeds`,
-        requestOptions,
+        {headers},
     );
-    const data = response.data;
 
+    const data = response.data;
+    const totalPages = Math.ceil(response.data.length/(LIMIT+1));
     const breedsWithImages = await Promise.all(
-        data.slice(0, 9).map(async (breed) => {
+        data.slice(page*LIMIT, LIMIT*(page+1)).map(async (breed) => {
             if (breed.reference_image_id) {
                 const imageResponse = await axios.get(
                     `${import.meta.env.VITE_DOG_API_URL}v1/images/${breed.reference_image_id}`,
-                    requestOptions,
+                    {headers},
                 );
                 return { ...breed, image: imageResponse.data.url };
             }
             return breed;
         }),
     );
-    return breedsWithImages;
+    return {breedsWithImages, totalPages, page};
 });
 
 export const fetchBreedDetails = createAsyncThunk(
@@ -39,14 +43,14 @@ export const fetchBreedDetails = createAsyncThunk(
     async (breedId) => {
         const response = await axios.get(
             `${import.meta.env.VITE_DOG_API_URL}v1/breeds/${breedId}`,
-            requestOptions,
+            {headers},
         );
         const breedData = response.data;
 
         if (breedData.reference_image_id) {
             const imageResponse = await axios.get(
                 `${import.meta.env.VITE_DOG_API_URL}v1/images/${breedData.reference_image_id}`,
-                requestOptions,
+                {headers},
             );
             return {...breedData, image: imageResponse.data.url}
         }
@@ -59,6 +63,9 @@ const initialState = {
     breedDetails: null,
     status: "idle",
     error: null,
+    currentPage: 0,
+    totalPages: 0,
+    pages: {}
 };
 
 const breedSlice = createSlice({
@@ -71,8 +78,12 @@ const breedSlice = createSlice({
                 state.status = "loading";
             })
             .addCase(fetchBreeds.fulfilled, (state, action) => {
+                const {breedsWithImages, totalPages, page} = action.payload;
                 state.status = "succeeded";
-                state.breeds = action.payload;
+                state.pages[page] = breedsWithImages;
+                state.breeds = breedsWithImages;
+                state.totalPages = totalPages;
+                state.currentPage = page;
             })
             .addCase(fetchBreeds.rejected, (state, action) => {
                 state.status = "failed";
@@ -91,5 +102,18 @@ const breedSlice = createSlice({
             });
     },
 });
+
+export const selectBreeds = (state) => state.breeds.breeds;
+
+export const selectBreedPages = createSelector(
+    (state) => state.breeds.pages,
+    (pages) => pages,
+);
+
+export const selectBreedDetails = (state) => state.breeds.breedDetails;
+
+export const selectStatus = (state) => state.breeds.status;
+
+export const selectError = (state) => state.breeds.error;
 
 export default breedSlice.reducer;
