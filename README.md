@@ -8,7 +8,7 @@ This is a React application that displays information about various dog breeds. 
 - Pagination to navigate through the list of breeds.
 - View detailed information about a specific breed.
 - Optimized state management using Redux and `reselect` for memoized selectors.
-- Deployed on Vercel at [Dog Breeds Application](https://the-scene-g9iri73r3-ankitkr27s-projects.vercel.app/).
+- Deployed on Vercel at [Dog Breeds Application](https://the-scene-rho.vercel.app/).
 
 ## Technologies Used
 
@@ -35,8 +35,8 @@ Make sure you have the following installed on your machine:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/dog-breeds-app.git
-   cd dog-breeds-app
+   git clone https://github.com/ankit-kr27/The-Scene.git
+   cd The-Scene
     ```
 2. Install the dependencies:
 
@@ -62,7 +62,7 @@ Make sure you have the following installed on your machine:
 
 ## Deployment
 
-The application is deployed on Vercel. You can visit it at [Dog Breeds Application](https://the-scene-g9iri73r3-ankitkr27s-projects.vercel.app/).
+The application is deployed on Vercel. You can visit it at [Dog Breeds Application](https://the-scene-rho.vercel.app/).
 
 ## Application Structure
 
@@ -82,8 +82,5 @@ The application is deployed on Vercel. You can visit it at [Dog Breeds Applicati
 - `dogSlice.js`: Redux slice for managing breeds and breed details.
 - `selectors.js`: Contains memoized selectors using `reselect`.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 
